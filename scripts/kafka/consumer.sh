@@ -1,0 +1,2 @@
+echo "consumer"
+docker exec -ti $(docker ps -f "name=kafka" -q) bash -c "opt/bitnami/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic flight_delay_classification_request --from-beginning"

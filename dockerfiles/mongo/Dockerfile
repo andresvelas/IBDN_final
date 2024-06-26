@@ -21,9 +21,9 @@ RUN ./resources/download_data.sh
 
 
 USER root 
-COPY ./dockerfiles/mongo/mongo-init.js /docker-entrypoint-initdb.d/
+COPY ./dockerfiles/mongo/mongo-init.sh /docker-entrypoint-initdb.d/
 
-RUN chmod 777 /docker-entrypoint-initdb.d/mongo-init.js
+RUN chmod 777 /docker-entrypoint-initdb.d/mongo-init.sh
 
 #todo lo que se copie en la carpeta /docker-entrypoint-initdb.d/ se ejecutara al iniciar el contenedor desde el direct
 
