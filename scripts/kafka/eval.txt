@@ -1,9 +1,0 @@
-eval
-kafka
-lee 
-el 
-fichero
-cada 
-linea
-como 
-mensaje

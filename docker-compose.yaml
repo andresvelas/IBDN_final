@@ -9,8 +9,6 @@ services:
     container_name: mongo
     ports:
       - 27017:27017
-    networks:
-      - agile_net
 
 
   kafka:
@@ -29,10 +27,95 @@ services:
       - KAFKA_ADVERTISED_LISTENERS:PLAINTEXT://kafka:9092
     ports:
       - '9092:9092'
-    networks:
-      - agile_net
 
-networks:
-  agile_net:
-    driver: bridge
+  spark-master:
+    image: bde2020/spark-master:3.2.1-hadoop3.2
+    container_name: spark-master
+    depends_on:
+      - proxy
+    ports:
+      - "7077:7077"
+      - "9001:9001"
+      - "8080:8080"
+    environment:
+      - "SPARK_MASTER=${SPARK_MASTER}"
+      - "INIT_DAEMON_STEP=setup_spark"
+      - "constraint:node==spark-master"
+      - "SERVER=${SERVER}"
+    volumes:
+      - ./wordCountConsult:/wordCountConsult
+  spark-worker-1:
+    image: bde2020/spark-worker:3.2.1-hadoop3.2
+    container_name: spark-worker-1
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+    environment:
+      - "SPARK_MASTER=${SPARK_MASTER}"
+      - "INIT_DAEMON_STEP=setup_spark"
+      - "constraint:node==spark-worker"
+      - "SERVER=${SERVER}"
+    volumes:
+      -  ./practica_creativa/model:/home/ibdn/IBDN_final/practica_creativa/model
+      -  ./practica_creativa/flight_prediction/target/scala-2.12:/home/ibdn/IBDN_final/practica_creativa/flight_prediction/target/scala-2.12
 
+  spark-worker-2:
+    image: bde2020/spark-worker:3.2.1-hadoop3.2
+    container_name: spark-worker-2
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8081"
+    environment:
+      - "SPARK_MASTER=${SPARK_MASTER}"
+      - "constraint:node==spark-master"
+      - "SERVER=${SERVER}"
+    volumes:
+      -  ./practica_creativa/model:/home/ibdn/IBDN_final/practica_creativa/model
+      -  ./practica_creativa/flight_prediction/target/scala-2.12:/home/ibdn/IBDN_final/practica_creativa/flight_prediction/target/scala-2.12
+ 
+
+  spark-worker-2:
+    image: bde2020/spark-worker:3.2.1-hadoop3.2
+    container_name: spark-worker-2
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8081"
+    environment:
+      - "SPARK_MASTER=${SPARK_MASTER}"
+      - "constraint:node==spark-master"
+      - "SERVER=${SERVER}"
+    volumes:
+      -  ./practica_creativa/model:/home/ibdn/IBDN_final/practica_creativa/model
+      -  ./practica_creativa/flight_prediction/target/scala-2.12:/home/ibdn/IBDN_final/practica_creativa/flight_prediction/target/scala-2.12
+  spark-submit:
+    image: bde2020/spark-submit:3.2.1-hadoop3.2
+    container_name: spark-submit
+    depends_on:
+      - spark-master
+      - spark-worker-1
+      - spark-worker-2
+    ports:
+      - "4040:4040"
+    environment:
+      - "SPARK_MASTER=${SPARK_MASTER}"
+      - "constraint:node==spark-master"
+      - "SERVER=${SERVER}"
+    command: bash -c "sleep 15; /spark/bin/spark-submit  --class  es.upm.dit.ging.predictor.MakePrediction --packages org.mongodb.spark:mongo-spark-connector_2.12:10.1.1,org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 --deploy-mode cluster --master spark://spark-master:7077 target/scala-2.12/flignt_prediction_2.12-0.1.jar"
+    volumes:
+      -  ./practica_creativa/model:/home/ibdn/IBDN_final/practica_creativa/model
+      -  ./practica_creativa/flight_prediction/target/scala-2.12:/home/ibdn/IBDN_final/practica_creativa/flight_prediction/target/scala-2.12
+  pyflask:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/pyflask/Dockerfile
+    image: pyflask_velas_miguel
+    container_name: pyflask
+    depends_on:
+      - mongo
+      - kafka
+    ports:
+      - 5001:5001
+    
