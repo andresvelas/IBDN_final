@@ -1,0 +1,1 @@
+FROM bde2020/spark-worker:3.2.1-hadoop3.2

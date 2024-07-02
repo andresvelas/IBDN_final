@@ -29,7 +29,7 @@ services:
       - '9092:9092'
 
   spark-master:
-    image: bde2020/spark-master:3.2.1-hadoop3.2
+    image: bde2020/spark-master:3.3.0-hadoop3.3
     container_name: spark-master
     depends_on:
       - proxy
@@ -74,12 +74,13 @@ services:
       - spark-master
       - spark-worker-1
       - spark-worker-2
+      - cassandra
     ports:
       - "4040:4040"
     environment:
       - "SPARK_MASTER=spark://spark-master:7077"
       - "constraint:node==spark-master"
-    command: bash -c "sleep 15; /spark/bin/spark-submit  --class  es.upm.dit.ging.predictor.MakePrediction --packages org.mongodb.spark:mongo-spark-connector_2.12:10.1.1,org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 --deploy-mode cluster --master spark://spark-master:7077 /practica_creativa/flight_prediction/target/scala-2.12/flight_prediction_2.12-0.1.jar"
+    command: bash -c "sleep 30; /spark/bin/spark-submit  --class  es.upm.dit.ging.predictor.MakePrediction --packages com.datastax.spark:spark-cassandra-connector_2.12:3.3.0,org.mongodb.spark:mongo-spark-connector_2.12:10.1.1,org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 --deploy-mode cluster --master spark://spark-master:7077 /practica_creativa/flight_prediction/target/scala-2.12/flight_prediction_2.12-0.1.jar"
     volumes:
       -  ./practica_creativa:/practica_creativa
   pyflask:
@@ -93,9 +94,19 @@ services:
     ports:
       - 5001:5001
     restart: always
+  cassandra:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/cassandra/Dockerfile
+    container_name: cassandra
+    hostname: cassandra
+    ports:
+      - 9042:9042
 
- 
- 
+
+
+
+
 
 
     

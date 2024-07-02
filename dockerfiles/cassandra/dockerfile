@@ -1,0 +1,7 @@
+FROM bitnami/cassandra:latest
+
+COPY create_kespace.cql /docker-entrypoint-initdb.d/create_kespace.cql
+
+ENV CASSANDRA_PORT=9042
+ENV CASSANDRA_USER=9042
+ENV CASSANDRA_PASSWORD=9042
