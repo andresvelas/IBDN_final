@@ -40,17 +40,20 @@ Y ejecutamos el siguiente comando para desplegar la aplicación
 ```bash
 docker-compose up -d --build
 ```
+![imagen](images/contenedores.png)
+
 -d para que se ejecute en segundo plano y --build para que se construyan las imágenes de los contenedores.
 
 Podemos observar como se han creado todos los contendores:
+```bash
+docker ps
+```
+![imagen](images/docker_ps.png)
 
-![imagen](images/containers.png)
 
 Una vez desplegado, podemos acceder a la aplicación a través de la siguiente URL:
+[[http://localhost:8081](http://localhost:5001/flights/delays/predict_kafka)/]()
 
-```bash
-http://localhost:5001/flights/delays/predict_kafka
-```
 y nos aparecerá la siguiente pantalla:
 
 ![imagen](images/app.png)
@@ -60,10 +63,13 @@ y nos aparecerá la siguiente pantalla:
 
 ## Spark
 Dentro del navegador accedemos a la siguiente URL para comprobar que los servicios de spark están funcionando correctamente:
+[http://localhost:8080/](http://localhost:8080/)
+![imagen](images/master.png)
 
-```bash
-http://localhost:8080/
-```
+Observamos los dos workers como se mantienen **ALIVE**,y uno de ellos esta corriendo **RUNNING**, también nos especifica la clase ...MakePrediction.
+Vamos a inspeccionar, pinchar sobre el worker en ejecución:
+![imagen](images/worker.png)
+
 
 ## Kafka
 
@@ -75,14 +81,14 @@ También, antes de lanzar el consumidor nos devuelve los topicos que hay en kafk
 ```
 Nos debería aparecer algo similar a esto:
 
-![imagen](images/kafka_consumer_response.png)
+![imagen](images/kafka_response.png)
 
 ```bash
 ./script/kafka_eval.sh flight_delay_classification_request
 ```
 Nos debería aparecer algo similar a esto:
 
-![imagen](images/kafka_consumer_request.png)
+![imagen](images/kafka_request.png)
 
 ## Cassandra
 
@@ -110,3 +116,8 @@ En este caso tenemos dos colleciones: origin_dest_distances y flight_delay_class
 Un ejemplo de lo que nos debería aparecer:
 
 ![imagen](images/mongo.png)
+
+En vez de haver creado dicho fichero .sh para evaluar el correcto funcionamiento de mongo podríamos haber entrado a mongo express, que nos facilita una interfaz de escritura para el administrador.
+Para ello accedemos a la URL [http://localhost:8081/](http://localhost:8081/)
+
+[imagen](images/mongo_express.png)
