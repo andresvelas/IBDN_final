@@ -1,6 +1,6 @@
 # Predicción de retrasos de vuelo
 
-Vamos a desplegar una aplicación que prediga el 'delay' de los vuelos según las variables de entrada que nos facilite el ususario final.
+Vamos a desplegar una aplicación que prediga el 'delay' de los vuelos según las variables de entrada que nos facilite el usuario final.
 
 
 ![imagen](images/app.png)
