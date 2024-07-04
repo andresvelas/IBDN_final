@@ -15,5 +15,8 @@ USER root
 
 ENV PROJECT_HOME /app
 
+
+
+
 WORKDIR $PROJECT_HOME
 ENTRYPOINT ["python3", "resources/web/predict_flask.py"]

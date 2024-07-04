@@ -2,7 +2,8 @@ import sys, os, re
 from flask import Flask, render_template, request
 from pymongo import MongoClient
 from bson import json_util
-
+from cassandra.cluster import Cluster
+from cassandra.auth import PlainTextAuthProvider
 # Configuration details
 import config
 
@@ -13,7 +14,11 @@ import predict_utils
 app = Flask(__name__)
 
 client = MongoClient(host= 'mongo', port = 27017)
-
+'''
+auth_provider = PlainTextAuthProvider(username='cassandra', password='cassandra')
+cluster = Cluster(['cassandra'], auth_provider=auth_provider)
+session = cluster.connect('agile_data_science')
+'''
 from pyelasticsearch import ElasticSearch
 elastic = ElasticSearch(config.ELASTIC_URL)
 
@@ -513,12 +518,26 @@ def flight_delays_page_kafka():
 @app.route("/flights/delays/predict/classify_realtime/response/<unique_id>")
 def classify_flight_delays_realtime_response(unique_id):
   """Serves predictions to polling requestors"""
+  def mongo_read():
+    return  client.agile_data_science.flight_delay_classification_response.find_one(
+    {
+      "UUID": unique_id
+    }
+  )
+  '''
+  def cassandra_read():
+    query = "SELECT prediction FROM flight_delay_classification_response WHERE uuid = %s"
+    result = session.execute(query, (unique_id,))
+    return result.one()
+  '''
   consumer = KafkaConsumer (
     'flight_delay_classification_response',
     bootstrap_servers=['kafka:9092'],
     auto_offset_reset='latest',
     enable_auto_commit=True,
   )
+  
+  
   def get_prediction():
     for message in consumer:
       message_str = message.value
