@@ -50,9 +50,8 @@ docker ps
 ```
 ![imagen](images/docker_ps.png)
 
-
 Una vez desplegado, podemos acceder a la aplicación a través de la siguiente URL:
-[[http://localhost:8081](http://localhost:5001/flights/delays/predict_kafka)/]()
+[http://localhost:5001/flights/delays/predict_kafka](http://localhost:5001/flights/delays/predict_kafka)
 
 y nos aparecerá la siguiente pantalla:
 
