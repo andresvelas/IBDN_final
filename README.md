@@ -119,6 +119,5 @@ Un ejemplo de lo que nos debería aparecer:
 En vez de haver creado dicho fichero .sh para evaluar el correcto funcionamiento de mongo podríamos haber entrado a mongo express, que nos facilita una interfaz de escritura para el administrador.
 Para ello accedemos a la URL [http://localhost:8081/](http://localhost:8081/)
 
-[imagen](images/mongo_express.png)
+![imagen](images/mongo_express.png)
 
-yyy
