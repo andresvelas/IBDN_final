@@ -29,7 +29,7 @@ Clonamos el repositorio
 ```bash
 git clone https://github.com/andresvelas/IBDN_final/
 ```
-UNa vez desplegado el repositorio, nos movemos a la carpeta del proyecto
+Una vez desplegado el repositorio, nos movemos a la carpeta del proyecto
 
 ```bash
 cd IBDN_final
