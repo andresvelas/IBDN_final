@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongo:
     build:
@@ -40,8 +38,6 @@ services:
   spark-master:
     image: bde2020/spark-master:3.3.0-hadoop3.3
     container_name: spark-master
-    depends_on:
-      - proxy
     ports:
       - "7077:7077"
       - "9001:9001" 
